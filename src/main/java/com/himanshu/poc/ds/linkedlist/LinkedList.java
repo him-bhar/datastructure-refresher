@@ -165,6 +165,62 @@ public class LinkedList {
     return sortedMerge(a, b);
   }
   
+  public int detectAndRemoveLoop(Node node) {
+    Node slow = node;
+    Node fast = node;
+    while (slow != null && fast != null && fast.getNext() != null) {
+      slow = slow.getNext();
+      fast = fast.getNext().getNext();
+      
+      if (fast == slow) {
+        System.out.println("Found the loop");
+        removeLoop(slow, node);
+        return 1;
+      }
+    }
+    return 0;
+  }
+  
+  private void removeLoop(Node loopNode, Node node) {
+    Node ptr1 = loopNode;
+    Node ptr2 = loopNode;
+    
+    int loopNodeCount = 0;
+    
+    //Taking ptr1 as base, we iterated prt2 one element at a time to reach it back to ptr1. 
+    //This completes 1 complete loop in linkedList
+    while (ptr2.getNext() != ptr1) {
+      ptr2 = ptr2.getNext();
+      loopNodeCount++;
+    }
+    
+    //Both pointers pointing to root right now.
+    ptr1 = root;
+    ptr2 = root;
+    
+    //Moving one pointer k steps ahead.
+    for (int i=0;i<loopNodeCount;i++) {
+      ptr2 = ptr2.getNext();
+    }
+    
+    //Move both pointers at the same pace. They will meet at loop starting node
+    while (ptr2 != ptr1) {
+      ptr2 = ptr2.getNext();
+      ptr1 = ptr1.getNext();
+    }
+    
+    //Get pointer to the last node
+    ptr2 = ptr2.getNext();
+    while (ptr2.getNext() != ptr1) {
+        ptr2 = ptr2.getNext();
+    }
+    
+    /* Set the next node of the loop ending node
+    to fix the loop */
+    ptr2.setNext(null);
+    
+  }
+
   public static void main(String[] args) {
     LinkedList lList = new LinkedList();
     lList.add(10);
@@ -182,6 +238,8 @@ public class LinkedList {
     System.out.println(lList);
     lList.delete(20);
     System.out.println(lList);
+    
+    lList = new LinkedList();
     
     lList.add(10);
     lList.add(20);
@@ -201,6 +259,7 @@ public class LinkedList {
     
     lList.reverse();
     System.out.println(lList);
+    lList = new LinkedList();
     
     LinkedList a = new LinkedList();
     a.add(10);
@@ -215,6 +274,15 @@ public class LinkedList {
     
     Node sortedMerged = a.sortedMerge(b.root);
     System.out.println(sortedMerged);
+    
+    a = new LinkedList();
+    b = new LinkedList();
+    
+    lList = new LinkedList();
+    lList.add(10);
+    lList.add(20);
+    lList.add(30);
+    lList.add(5);
   }
   
 
